@@ -30,7 +30,7 @@ var createPlayersMap = map[string]func() ass.Player{
 	},
 	/*
 		"$example": func() ass.Player {
-			return exampleplayer.NewExamplePlayer(69, 420, 1337)
+			return exampleplayer.NewExamplePlayer(*rounds)
 		},
 	*/
 }
