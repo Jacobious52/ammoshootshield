@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jacobious52/ass/players/ammoshootplayer"
 	"github.com/Jacobious52/ass/players/ioplayer"
 
 	"github.com/Jacobious52/ass/ass"
@@ -16,29 +17,32 @@ import (
 
 // commandline args
 var (
-	player1Source = kingpin.Flag("player1", "player1 source").Default("$random").String()
-	player2Source = kingpin.Flag("player2", "player2 source").Default("$random").String()
+	player1Source = kingpin.Flag("player1", "player1 source").Default("player_random").String()
+	player2Source = kingpin.Flag("player2", "player2 source").Default("player_random").String()
 	rounds        = kingpin.Flag("rounds", "rounds to play in a match").Default("1000").Int()
 )
 
 // createPlayersMap is where packaged players are registered for use from the commandline
 // *** add your player in here ***
-// map key MUST start with '$' to work with cmd parser
+// map key MUST start with 'player_' to work with cmd parser
 var createPlayersMap = map[string]func() ass.Player{
-	"$random": func() ass.Player {
+	"player_random": func() ass.Player {
 		return new(randomplayer.RandomPlayer)
 	},
+	"player_ammoshoot": func() ass.Player {
+		return &ammoshootplayer.AmmoShootPlayer{LastMove: ass.ShootMove}
+	},
 	/*
-		"$example": func() ass.Player {
+		"player_example": func() ass.Player {
 			return exampleplayer.NewExamplePlayer(*rounds)
 		},
 	*/
 }
 
 // parsePlayer reads the player source string and creates either a registered player
-// or I/O device player if does not start with '$'
+// or I/O device player if does not start with 'player_'
 func parsePlayer(playerStr string) *ass.PlayerController {
-	if strings.HasPrefix(playerStr, "$") {
+	if strings.HasPrefix(playerStr, "player_") {
 		if f, ok := createPlayersMap[playerStr]; ok {
 			return &ass.PlayerController{Player: f()}
 		}
