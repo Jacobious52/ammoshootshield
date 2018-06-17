@@ -7,6 +7,7 @@ each round each player makes 1 move
 - shield: block a shot from the other player
 
 if a player shoots and the other player shields, continue playing
+if a player shoots with 5 or more ammo, and the other player shields, player shooting wins
 if a players shoots and the other player ammos, player shooting wins round
 if both players shoot the player with the most ammo wins
 
