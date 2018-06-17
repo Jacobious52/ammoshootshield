@@ -3,7 +3,7 @@ package randomplayer
 import (
 	"math/rand"
 
-	"github.com/Jacobious52/ass/ass"
+	"github.com/Jacobious52/ammoshootshield/ass"
 )
 
 // RandomPlayer plays a random move everytime

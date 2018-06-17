@@ -1,7 +1,7 @@
 package ammoshootplayer
 
 import (
-	"github.com/Jacobious52/ass/ass"
+	"github.com/Jacobious52/ammoshootshield/ass"
 )
 
 // AmmoShootPlayer plays a random move everytime

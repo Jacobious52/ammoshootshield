@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Jacobious52/ass/players/ammoshootplayer"
-	"github.com/Jacobious52/ass/players/ioplayer"
+	"github.com/Jacobious52/ammoshootshield/players/ammoshootplayer"
+	"github.com/Jacobious52/ammoshootshield/players/ioplayer"
 
-	"github.com/Jacobious52/ass/ass"
-	"github.com/Jacobious52/ass/players/randomplayer"
+	"github.com/Jacobious52/ammoshootshield/ass"
+	"github.com/Jacobious52/ammoshootshield/players/randomplayer"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 

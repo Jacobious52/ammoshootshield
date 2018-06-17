@@ -1,7 +1,7 @@
 package ioplayer
 
 import (
-	"github.com/Jacobious52/ass/ass"
+	"github.com/Jacobious52/ammoshootshield/ass"
 )
 
 // IOPlayer is a player that reads and writes from an io device
