@@ -41,6 +41,7 @@ var moveMap = map[PlayerMove]func(*PlayerController, *PlayerController) GameOutc
 		if p1.Ammo > 0 {
 			return Player1Wins
 		}
+		p2.Ammo++
 		return NoWinner
 	},
 	playP2AmmoP1Shield: func(p1, p2 *PlayerController) GameOutcome { // 0010 : ammo sheild
@@ -51,6 +52,7 @@ var moveMap = map[PlayerMove]func(*PlayerController, *PlayerController) GameOutc
 		if p2.Ammo > 0 {
 			return Player2Wins
 		}
+		p1.Ammo++
 		return NoWinner
 	},
 	playP2ShootP1Shoot: func(p1, p2 *PlayerController) GameOutcome { // 0101 : shoot shoot
@@ -61,7 +63,7 @@ var moveMap = map[PlayerMove]func(*PlayerController, *PlayerController) GameOutc
 			}
 			return NoWinner
 		}
-		if p1.Ammo < p2.Ammo {
+		if p1.Ammo > p2.Ammo {
 			return Player1Wins
 		}
 		return Player2Wins

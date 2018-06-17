@@ -18,8 +18,10 @@ type Player interface {
 	Name() string
 
 	// BeginMatch is called before the entire match is started
+	// param 1 is number of rounds to be played
+	// param 2 is which player you are (1 or 2) (your win condition)
 	// Used for setup.. loading neuralnets and such
-	BeginMatch()
+	BeginMatch(int, GameOutcome)
 	// EndMatch is called after the entire match is finished
 	// Used for saving what you learned
 	// param 1 is the outcome of the entire match

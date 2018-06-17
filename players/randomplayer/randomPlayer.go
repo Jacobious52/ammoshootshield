@@ -26,7 +26,7 @@ func (p *RandomPlayer) Feedback(yourMove, opponentsMove ass.PlayerMove) {
 }
 
 // BeginMatch match is about to start
-func (p *RandomPlayer) BeginMatch() {
+func (p *RandomPlayer) BeginMatch(rounds int, winCondition ass.GameOutcome) {
 }
 
 // EndMatch match has ended. final result

@@ -31,7 +31,7 @@ func (p *AmmoShootPlayer) Feedback(yourMove, opponentsMove ass.PlayerMove) {
 }
 
 // BeginMatch match is about to start
-func (p *AmmoShootPlayer) BeginMatch() {
+func (p *AmmoShootPlayer) BeginMatch(rounds int, winCondition ass.GameOutcome) {
 }
 
 // EndMatch match has ended. final result

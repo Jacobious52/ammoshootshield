@@ -29,8 +29,8 @@ type Match struct {
 func (m *Match) RunRounds(rounds int) {
 	name1 := m.Player1.Name()
 	name2 := m.Player2.Name()
-	m.Player1.BeginMatch()
-	m.Player2.BeginMatch()
+	m.Player1.BeginMatch(rounds, Player1Wins)
+	m.Player2.BeginMatch(rounds, Player2Wins)
 
 	for i := 1; i < rounds+1; i++ {
 
@@ -98,7 +98,7 @@ func (m *Match) runRound() GameOutcome {
 		p1DoneChan <- struct{}{}
 	}(p1DoneChan)
 	go func(p2DoneChan chan struct{}) {
-		m.Player2.Feedback(m1, m2)
+		m.Player2.Feedback(m2, m1)
 		p2DoneChan <- struct{}{}
 	}(p2DoneChan)
 
