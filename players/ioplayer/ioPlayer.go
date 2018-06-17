@@ -123,17 +123,17 @@ func (p *IOPlayer) Move() ass.PlayerMove {
 // Feedback gets the last game results
 // Do nothing as it's just random so we don't learn
 func (p *IOPlayer) Feedback(yourMove, opponentsMove ass.PlayerMove) {
-	p.writeRequest(cmdFeedback, fmt.Sprint(yourMove), fmt.Sprint(opponentsMove))
+	p.writeRequest(cmdFeedback, fmt.Sprintf("%d", int(yourMove)), fmt.Sprintf("%d", int(opponentsMove)))
 }
 
 // BeginMatch match is about to start
 func (p *IOPlayer) BeginMatch(rounds int, winCondition ass.GameOutcome) {
-	p.writeRequest(cmdMatchBegin, fmt.Sprint(rounds), fmt.Sprint(winCondition))
+	p.writeRequest(cmdMatchBegin, fmt.Sprintf("%d", rounds), fmt.Sprintf("%d", int(winCondition)))
 }
 
 // EndMatch match has ended. final result
 func (p *IOPlayer) EndMatch(finalOutcome ass.GameOutcome) {
-	p.writeRequest(cmdMatchEnd, fmt.Sprint(finalOutcome))
+	p.writeRequest(cmdMatchEnd, fmt.Sprintf("%d", int(finalOutcome)))
 	err := p.Cmd.Wait()
 	if err != nil {
 		log.Println("failed to shutdown:", err)
@@ -147,5 +147,5 @@ func (p *IOPlayer) BeginGame() {
 
 // EndGame Game has ended. Result of game
 func (p *IOPlayer) EndGame(outcome ass.GameOutcome) {
-	p.writeRequest(cmdGameEnd, fmt.Sprint(outcome))
+	p.writeRequest(cmdGameEnd, fmt.Sprintf("%d", int(outcome)))
 }

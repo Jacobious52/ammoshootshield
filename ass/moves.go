@@ -12,6 +12,19 @@ const (
 	ShieldMove
 )
 
+func (m PlayerMove) String() string {
+	switch m {
+	case AmmoMove:
+		return "ammo"
+	case ShootMove:
+		return "shoot"
+	case ShieldMove:
+		return "shield"
+	default:
+		return "unknown"
+	}
+}
+
 // encoded move combinations
 var (
 	playP2AmmoP1Ammo     = encodeMoves(AmmoMove, AmmoMove)

@@ -59,11 +59,19 @@ func main() {
 	p1 := parsePlayer(*player1Source)
 	p2 := parsePlayer(*player2Source)
 
+	logFile, err := os.Create("play.log")
+	if err != nil {
+		fmt.Println("failed to create play.log")
+		return
+	}
+	defer logFile.Close()
+
 	m := &ass.Match{
 		Player1:   p1,
 		Player2:   p2,
 		SleepTime: 5 * time.Millisecond,
 		BarWidth:  60,
+		Log:       logFile,
 	}
 
 	m.RunRounds(*rounds)

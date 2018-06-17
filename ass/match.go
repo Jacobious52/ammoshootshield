@@ -2,6 +2,7 @@ package ass
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"time"
 )
@@ -18,33 +19,53 @@ const (
 	Player2Wins
 )
 
+func (g GameOutcome) String() string {
+	switch g {
+	case NoWinner:
+		return "no_winner"
+	case Player1Wins:
+		return "player1_wins"
+	case Player2Wins:
+		return "player2_wins"
+	default:
+		return "unknown"
+	}
+}
+
 // Match defines a match that plays many rounds
 type Match struct {
 	Player1, Player2 *PlayerController
 	SleepTime        time.Duration
 	BarWidth         int
+	Log              io.Writer
 }
 
 // RunRounds runs n rounds and displays the output as a animated bar
 func (m *Match) RunRounds(rounds int) {
 	name1 := m.Player1.Name()
 	name2 := m.Player2.Name()
+
+	fmt.Fprintf(m.Log, "[%v] vs [%v] : %v rounds\n", name1, name2, rounds)
+
 	m.Player1.BeginMatch(rounds, Player1Wins)
 	m.Player2.BeginMatch(rounds, Player2Wins)
 
 	for i := 1; i < rounds+1; i++ {
-
 		m.Player1.BeginGame()
 		m.Player2.BeginGame()
 
 		// run this round until it is finished
 		var lastOutcome GameOutcome
-		for lastOutcome == NoWinner {
+		var counter int
+		for lastOutcome == NoWinner && counter < 100 {
 			lastOutcome = m.runRound()
+			counter++
 		}
 
 		m.Player1.EndGame(lastOutcome)
 		m.Player2.EndGame(lastOutcome)
+
+		fmt.Fprintf(m.Log, "round %v : %v\n", i, lastOutcome)
 
 		// update stats and display output
 		if lastOutcome == Player1Wins {
@@ -63,6 +84,9 @@ func (m *Match) RunRounds(rounds int) {
 			float64(rounds),
 		)
 
+		m.Player1.Ammo = 0
+		m.Player2.Ammo = 0
+
 		// for better visuals of progress bar
 		time.Sleep(m.SleepTime)
 	}
@@ -79,6 +103,8 @@ func (m *Match) RunRounds(rounds int) {
 	} else {
 		fmt.Println("It's a draw!")
 	}
+
+	fmt.Fprintf(m.Log, "[%v] vs [%v] : %v rounds\n", m.Player1.Wins, m.Player2.Wins, finalOutcome)
 
 	m.Player1.EndMatch(finalOutcome)
 	m.Player2.EndMatch(finalOutcome)
@@ -101,6 +127,8 @@ func (m *Match) runRound() GameOutcome {
 		m.Player2.Feedback(m2, m1)
 		p2DoneChan <- struct{}{}
 	}(p2DoneChan)
+
+	fmt.Fprintf(m.Log, "[%v] vs [%v] : %v\n", m1, m2, lastOutcome)
 
 	<-p1DoneChan
 	<-p2DoneChan
