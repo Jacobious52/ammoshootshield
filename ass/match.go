@@ -29,14 +29,22 @@ type Match struct {
 func (m *Match) RunRounds(rounds int) {
 	name1 := m.Player1.Name()
 	name2 := m.Player2.Name()
+	m.Player1.BeginMatch()
+	m.Player2.BeginMatch()
 
 	for i := 1; i < rounds+1; i++ {
+
+		m.Player1.BeginGame()
+		m.Player2.BeginGame()
 
 		// run this round until it is finished
 		var lastOutcome GameOutcome
 		for lastOutcome == NoWinner {
 			lastOutcome = m.runRound()
 		}
+
+		m.Player1.EndGame(lastOutcome)
+		m.Player2.EndGame(lastOutcome)
 
 		// update stats and display output
 		if lastOutcome == Player1Wins {
@@ -59,14 +67,21 @@ func (m *Match) RunRounds(rounds int) {
 		time.Sleep(m.SleepTime)
 	}
 
+	var finalOutcome GameOutcome
+
 	// game finished
 	if m.Player1.Wins > m.Player2.Wins {
+		finalOutcome = Player1Wins
 		fmt.Println("Player1 wins!")
 	} else if m.Player1.Wins < m.Player2.Wins {
+		finalOutcome = Player2Wins
 		fmt.Println("Player2 wins!")
 	} else {
 		fmt.Println("It's a draw!")
 	}
+
+	m.Player1.EndMatch(finalOutcome)
+	m.Player2.EndMatch(finalOutcome)
 }
 
 // runRound runs one round
@@ -78,8 +93,14 @@ func (m *Match) runRound() GameOutcome {
 	p1DoneChan := make(chan struct{})
 	p2DoneChan := make(chan struct{})
 
-	go m.Player1.Feedback(m2, lastOutcome, p1DoneChan)
-	go m.Player2.Feedback(m1, lastOutcome, p2DoneChan)
+	go func(p1DoneChan chan struct{}) {
+		m.Player1.Feedback(m1, m2)
+		p1DoneChan <- struct{}{}
+	}(p1DoneChan)
+	go func(p2DoneChan chan struct{}) {
+		m.Player2.Feedback(m1, m2)
+		p2DoneChan <- struct{}{}
+	}(p2DoneChan)
 
 	<-p1DoneChan
 	<-p2DoneChan
@@ -94,8 +115,12 @@ func (m *Match) doMoves() (PlayerMove, PlayerMove, GameOutcome) {
 	m1Chan := make(chan PlayerMove)
 	m2Chan := make(chan PlayerMove)
 
-	go m.Player1.Move(m1Chan)
-	go m.Player2.Move(m2Chan)
+	go func(m1Chan chan PlayerMove) {
+		m1Chan <- m.Player1.Move()
+	}(m1Chan)
+	go func(m2Chan chan PlayerMove) {
+		m2Chan <- m.Player2.Move()
+	}(m2Chan)
 
 	m1 := <-m1Chan
 	m2 := <-m2Chan

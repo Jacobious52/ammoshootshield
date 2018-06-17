@@ -15,13 +15,24 @@ type PlayerController struct {
 // implement this in a new package to use in main as a player
 type Player interface {
 	// Name returns the printable name of the player
-	// I/O: first output requested, after sending number of rounds to input
 	Name() string
-	// Move outputs the next move of the player through thr channel
-	// I/O: called after name and before each round
-	Move(chan<- PlayerMove)
-	// Feedback gives the last opponents move and outcome of the game
-	// Must send struct{}{} through channel when finished processing
-	// I/O: input sent after every read from move
-	Feedback(PlayerMove, GameOutcome, chan<- struct{})
+
+	// BeginMatch is called before the entire match is started
+	// Used for setup.. loading neuralnets and such
+	BeginMatch()
+	// EndMatch is called after the entire match is finished
+	// Used for saving what you learned
+	// param 1 is the outcome of the entire match
+	EndMatch(GameOutcome)
+	// BeginGame runs before a game is played
+	BeginGame()
+	// EndGame is played after a game is finished
+	// Game result returns the winner of the game
+	EndGame(GameOutcome)
+
+	// Move should return the next move of the player
+	Move() PlayerMove
+	// Feedback returns your last move and the last opponents move
+	// param 1 is your move, param 2 is their move
+	Feedback(PlayerMove, PlayerMove)
 }
